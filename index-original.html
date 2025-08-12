@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NL Wallet example</title>
+    <script type="module" src="./src/nl-wallet-web.js"></script>
+  </head>
+  <style>
+    nl-wallet-button::part(button) {
+      background: blue;
+      border: 0;
+    }
+
+    nl-wallet-button::part(button-span) {
+      color: white;
+      font-weight: bold;
+    }
+  </style>
+  <body>
+    <div id="app">
+      <h1>Login with NL Wallet</h1>
+      <p>Click the button below to start a session</p>
+      <nl-wallet-button
+        text="Share with NL Wallet"
+        usecase="nlw_358b64b727fff6d0b03b7b29edb7da00"
+        start-url="https://wallet-connect.eu/create-session?lang=en&return_url=http%3A%2F%2Flocalhost%3A8080%2Findex2.html"
+        lang="en"
+      ></nl-wallet-button>
+    </div>
+  </body>
+
+  <script>
+    const wallet_button = document.getElementsByTagName("nl-wallet-button");
+    const return_url = (e) => {
+      if (e.detail && e.detail.length > 1) {
+        const session_token = e.detail[0];
+        const session_type = e.detail[1];
+
+        // redirect to the return URL, but only on cross_device sessions
+        if (session_type === "cross_device") {
+          window.open("http://example.com/my_usecase/return/" + session_token);
+        }
+      }
+    };
+
+    wallet_button.addEventListener("success", return_url, false);
+    wallet_button.addEventListener("failed", return_url, false);
+  </script>
+</html>
