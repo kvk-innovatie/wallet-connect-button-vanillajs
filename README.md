@@ -18,6 +18,7 @@ A vanilla JavaScript web component for NL Wallet Connect integration.
   apiKey="your-api-key"
   walletConnectHost="https://wallet-connect.eu"
   label="Share data with your wallet"
+  lang="en"
 ></wallet-connect-button>
 ```
 
@@ -41,6 +42,7 @@ walletButton.addEventListener('failed', (event) => {
 - `apiKey` - Your API key (optional)
 - `walletConnectHost` - Wallet connect host URL (optional, defaults to https://wallet-connect.eu)
 - `label` - Button text (optional, defaults to "Connect Wallet")
+- `lang` - Language for the wallet interface (optional, defaults to "nl", supports "nl" and "en")
 
 ## Events
 

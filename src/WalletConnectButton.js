@@ -5,6 +5,7 @@ class WalletConnectButton {
     this.apiKey = options.apiKey;
     this.walletConnectHost = options.walletConnectHost || "https://wallet-connect.eu";
     this.buttonText = options.buttonText || "Connect Wallet";
+    this.lang = options.lang || "nl";
     
     this.loading = false;
     this.error = null;
@@ -154,7 +155,7 @@ class WalletConnectButton {
         text="${this.buttonText}"
         usecase="${this.clientId}"
         start-url="${startUrl}"
-        lang="nl"
+        lang="${this.lang}"
       ></nl-wallet-button>
     `;
 
@@ -194,7 +195,7 @@ class WalletConnectButtonElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['clientid', 'apikey', 'walletconnecthost', 'label'];
+    return ['clientid', 'apikey', 'walletconnecthost', 'label', 'lang'];
   }
 
   connectedCallback() {
@@ -204,6 +205,7 @@ class WalletConnectButtonElement extends HTMLElement {
       apiKey: this.getAttribute('apiKey') || this.getAttribute('apikey'),
       walletConnectHost: this.getAttribute('walletConnectHost') || this.getAttribute('walletconnecthost') || 'https://wallet-connect.eu',
       buttonText: this.getAttribute('label') || 'Connect Wallet',
+      lang: this.getAttribute('lang') || 'nl',
       onSuccess: (attributes) => {
         // Dispatch custom event for success
         this.dispatchEvent(new CustomEvent('success', {
@@ -249,6 +251,9 @@ class WalletConnectButtonElement extends HTMLElement {
           break;
         case 'label':
           this.walletButton.buttonText = newValue;
+          break;
+        case 'lang':
+          this.walletButton.lang = newValue;
           break;
       }
       this.walletButton.render();

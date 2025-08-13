@@ -20,19 +20,21 @@
       apiKey="78396e965f9698aed80603ab517424bcc8f62b20b2e7e6d0a2ee69f6b962cd25"
       walletConnectHost="http://localhost:3021"
       label="Deel gegevens met je wallet (local)"
+      lang="nl"
     ></wallet-connect-button> -->
 
     <wallet-connect-button
       clientId="nlw_fe98ca6b35b25dbad0717ebb184dbe68"
       apiKey="27ff4d0ceb03b0cd02a4b4d6fe4fe6436791223be38823bc97b8319a5991c769"
-      label="Deel gegevens met je wallet (via wallet-connect.eu)"
+      label="Deel gegevens met je wallet"
+      lang="nl"
     ></wallet-connect-button>
 
     <pre id="attributes-content"></pre>
 
-    <!-- <script src="./src/WalletConnectButton.js"></script> -->
+    <script src="./src/WalletConnectButton.js"></script>
     <!-- <script src="./wallet-connect-button.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/gh/kvk-innovatie/wallet-connect-button-vanillajs@v1.0.1/wallet-connect-button.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/gh/kvk-innovatie/wallet-connect-button-vanillajs@v1.0.2/wallet-connect-button.js"></script> -->
     <script>
       function handleSuccess(event) {
         let attributes = event.detail;
