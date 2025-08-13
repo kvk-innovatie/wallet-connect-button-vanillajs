@@ -1,12 +1,22 @@
 {
-  "name": "wallet-connect-example-vanillajs",
-  "version": "1.0.0",
-  "description": "",
-  "main": "build.js",
+  "name": "wallet-connect-button-vanillajs",
+  "version": "1.0.1",
+  "description": "Vanilla JavaScript Web Component for NL Wallet Connect integration",
+  "main": "wallet-connect-button.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node build.js"
+    "build": "node build.js",
+    "release": "npm run build && git add . && git commit -m \"Release v$npm_package_version\" && git tag v$npm_package_version && git push && git push --tags"
   },
+  "keywords": ["wallet", "connect", "web-component", "javascript", "nl-wallet"],
   "author": "",
-  "license": "ISC"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kvk-innovatie/wallet-connect-button-vanillajs.git"
+  },
+  "files": [
+    "wallet-connect-button.js",
+    "README.md"
+  ]
 }
