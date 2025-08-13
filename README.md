@@ -17,7 +17,7 @@ A vanilla JavaScript web component for NL Wallet Connect integration.
   clientId="your-client-id"
   apiKey="your-api-key"
   walletConnectHost="https://wallet-connect.eu"
-  label="Connect with NL Wallet"
+  label="Share data with your wallet"
 ></wallet-connect-button>
 ```
 
