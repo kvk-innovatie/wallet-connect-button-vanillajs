@@ -79,7 +79,8 @@ class WalletConnectButton {
   async fetchDisclosedAttributes(sessionToken, nonce = null) {
     this.setLoading(true);
     
-    let url = `${this.walletConnectHost}/disclosed-attributes?session_token=${sessionToken}&client_id=${this.clientId}`;
+    const host = this.apiKey ? this.walletConnectHost || "https://wallet-connect.eu" : "";
+    let url = `${host}/api/disclosed-attributes?session_token=${sessionToken}&client_id=${this.clientId}`;
     if (nonce) url = `${url}&nonce=${nonce}`;
 
     const headers = this.apiKey ? { 'Authorization': `Bearer ${this.apiKey}` } : {};
@@ -148,7 +149,7 @@ class WalletConnectButton {
       return;
     }
 
-    const startUrl = `${this.walletConnectHost}/create-session?lang=en&return_url=${encodeURIComponent(window.location.href)}`;
+    const startUrl = `${this.walletConnectHost}/api/create-session?lang=en&return_url=${encodeURIComponent(window.location.href)}`;
     
     this.container.innerHTML = `
       <nl-wallet-button

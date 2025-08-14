@@ -9,9 +9,9 @@ VERSION=$(node -p "require('./package.json').version")
 
 echo "📦 Creating release v$VERSION..."
 
-# Update version in index.html
-echo "🔄 Updating version in index.html..."
-sed -i.bak "s|@v[0-9]*\.[0-9]*\.[0-9]*|@v$VERSION|g" index.html && rm index.html.bak
+# Update version in src/index.html
+echo "🔄 Updating version in src/index.html..."
+sed -i.bak "s|@v[0-9]*\.[0-9]*\.[0-9]*|@v$VERSION|g" src/index.html && rm src/index.html.bak
 
 # Add all changes
 git add .

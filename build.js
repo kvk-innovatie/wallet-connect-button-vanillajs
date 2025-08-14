@@ -15,6 +15,10 @@ const sourceFiles = [
   'WalletConnectButton.js'
 ];
 
+// Copy index.html to public folder
+const indexHtmlSrc = path.join(srcDir, 'index.html');
+const indexHtmlDest = './public/index.html';
+
 // Read and combine files
 let combinedContent = '';
 
@@ -63,19 +67,36 @@ for (const filename of sourceFiles) {
   combinedContent += '\n\n';
 }
 
-// Write the combined file
+// Copy index.html to public folder
 try {
-  fs.writeFileSync(outputFile, combinedContent);
-  console.log(`✅ Successfully built ${outputFile}`);
-  
-  // Show file size
-  const stats = fs.statSync(outputFile);
-  const fileSize = (stats.size / 1024).toFixed(2);
-  console.log(`📊 File size: ${fileSize} KB`);
-  
+  if (fs.existsSync(indexHtmlSrc)) {
+    fs.copyFileSync(indexHtmlSrc, indexHtmlDest);
+    console.log(`✅ Copied index.html to public folder`);
+  }
 } catch (error) {
-  console.error('❌ Error writing output file:', error.message);
+  console.error('❌ Error copying index.html:', error.message);
   process.exit(1);
 }
+
+// Write the combined file to both root and public folder
+const outputFiles = [
+  outputFile,
+  './public/wallet-connect-button.js'
+];
+
+for (const file of outputFiles) {
+  try {
+    fs.writeFileSync(file, combinedContent);
+    console.log(`✅ Successfully built ${file}`);
+  } catch (error) {
+    console.error(`❌ Error writing ${file}:`, error.message);
+    process.exit(1);
+  }
+}
+
+// Show file size
+const stats = fs.statSync(outputFile);
+const fileSize = (stats.size / 1024).toFixed(2);
+console.log(`📊 File size: ${fileSize} KB`);
 
 console.log('🎉 Build complete!');
