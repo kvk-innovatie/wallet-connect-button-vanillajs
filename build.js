@@ -7,7 +7,6 @@ console.log('Building wallet-connect-button.js...');
 
 // File paths
 const srcDir = './src';
-const outputFile = './wallet-connect-button.js';
 
 // Files to combine (in order)
 const sourceFiles = [
@@ -78,25 +77,21 @@ try {
   process.exit(1);
 }
 
-// Write the combined file to both root and public folder
-const outputFiles = [
-  outputFile,
-  './public/wallet-connect-button.js'
-];
+// Write the combined file only to public folder
+const publicOutputFile = './public/wallet-connect-button.js';
 
-for (const file of outputFiles) {
-  try {
-    fs.writeFileSync(file, combinedContent);
-    console.log(`✅ Successfully built ${file}`);
-  } catch (error) {
-    console.error(`❌ Error writing ${file}:`, error.message);
-    process.exit(1);
-  }
+try {
+  fs.writeFileSync(publicOutputFile, combinedContent);
+  console.log(`✅ Successfully built ${publicOutputFile}`);
+  
+  // Show file size
+  const stats = fs.statSync(publicOutputFile);
+  const fileSize = (stats.size / 1024).toFixed(2);
+  console.log(`📊 File size: ${fileSize} KB`);
+  
+} catch (error) {
+  console.error(`❌ Error writing ${publicOutputFile}:`, error.message);
+  process.exit(1);
 }
-
-// Show file size
-const stats = fs.statSync(outputFile);
-const fileSize = (stats.size / 1024).toFixed(2);
-console.log(`📊 File size: ${fileSize} KB`);
 
 console.log('🎉 Build complete!');

@@ -4,6 +4,10 @@
 echo "🔨 Building project..."
 npm run build
 
+# Copy built file to root for CDN release
+echo "📦 Copying wallet-connect-button.js to root for CDN..."
+cp ./public/wallet-connect-button.js ./wallet-connect-button.js
+
 # Get version from package.json
 VERSION=$(node -p "require('./package.json').version")
 
