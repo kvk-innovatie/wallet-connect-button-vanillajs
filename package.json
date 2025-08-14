@@ -1,6 +1,6 @@
 {
   "name": "wallet-connect-button-vanillajs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Vanilla JavaScript Web Component for NL Wallet Connect integration",
   "main": "wallet-connect-button.js",
   "scripts": {
@@ -9,7 +9,13 @@
     "start": "node server.mjs",
     "dev": "npm run build && node server.mjs"
   },
-  "keywords": ["wallet", "connect", "web-component", "javascript", "nl-wallet"],
+  "keywords": [
+    "wallet",
+    "connect",
+    "web-component",
+    "javascript",
+    "nl-wallet"
+  ],
   "author": "",
   "license": "MIT",
   "repository": {

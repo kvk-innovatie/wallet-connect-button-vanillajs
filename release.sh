@@ -8,7 +8,11 @@ npm run build
 echo "📦 Copying wallet-connect-button.js to root for CDN..."
 cp ./public/wallet-connect-button.js ./wallet-connect-button.js
 
-# Get version from package.json
+# Increment patch version in package.json
+echo "📈 Incrementing patch version..."
+npm version patch --no-git-tag-version
+
+# Get new version from package.json
 VERSION=$(node -p "require('./package.json').version")
 
 echo "📦 Creating release v$VERSION..."
