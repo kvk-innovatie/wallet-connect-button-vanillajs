@@ -99,6 +99,8 @@ class WalletConnectButton {
     } catch (error) {
       console.log(error.message);
       this.setError(error.message);
+      // Remove session_token even when request fails
+      this.removeSearchParam('session_token');
       this.setLoading(false);
     }
   }
