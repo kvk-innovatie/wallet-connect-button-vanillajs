@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Wallet Connect Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
       nl-wallet-button::part(button) {
         background: #467ee5;
@@ -15,36 +16,43 @@
     </style>
   </head>
   <body>
-    <!-- <wallet-connect-button
-      clientId="nlw_358b64b727fff6d0b03b7b29edb7da00"
-      apiKey="78396e965f9698aed80603ab517424bcc8f62b20b2e7e6d0a2ee69f6b962cd25"
-      walletConnectHost="http://localhost:3021"
-      label="Deel gegevens met je wallet (local)"
-      lang="nl"
-    ></wallet-connect-button> -->
-
-    <wallet-connect-button
-      clientId="nlw_fe98ca6b35b25dbad0717ebb184dbe68"
-      apiKey="27ff4d0ceb03b0cd02a4b4d6fe4fe6436791223be38823bc97b8319a5991c769"
-      label="Deel gegevens met je wallet"
-      lang="nl"
-    ></wallet-connect-button>
-
-    <!-- <wallet-connect-button
-      clientId="nlw_fe98ca6b35b25dbad0717ebb184dbe68"
-      label="Deel gegevens met je wallet"
-      lang="en"
-    ></wallet-connect-button> -->
-
+    <!-- <div>
+      <wallet-connect-button
+        clientId="nlw_358b64b727fff6d0b03b7b29edb7da00"
+        apiKey="78396e965f9698aed80603ab517424bcc8f62b20b2e7e6d0a2ee69f6b962cd25"
+        walletConnectHost="http://localhost:3021"
+        label="Deel gegevens met je wallet (local)"
+        lang="nl"
+      />
+    </div> -->
+    <div>
+      <wallet-connect-button
+        clientId="nlw_fe98ca6b35b25dbad0717ebb184dbe68"
+        apiKey="27ff4d0ceb03b0cd02a4b4d6fe4fe6436791223be38823bc97b8319a5991c769"
+        label="Deel gegevens met je wallet (quick and easy, frontend only)"
+        lang="nl"
+      />
+    </div>
+    <div>
+      <wallet-connect-button
+        clientId="nlw_fe98ca6b35b25dbad0717ebb184dbe68"
+        label="Deel gegevens met je wallet (secure, via backend)"
+        lang="en"
+      />
+    </div>
 
     <pre id="attributes-content"></pre>
 
     <script src="wallet-connect-button.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/gh/kvk-innovatie/wallet-connect-button-vanillajs@v1.0.3/wallet-connect-button.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/gh/kvk-innovatie/wallet-connect-button-vanillajs@v1.0.4/wallet-connect-button.js"></script> -->
     <script>
       function handleSuccess(event) {
         let attributes = event.detail;
         document.getElementById("attributes-content").textContent = JSON.stringify(attributes, null, 2);
+        
+        // Hide all wallet connect buttons
+        const buttons = document.querySelectorAll('wallet-connect-button');
+        buttons.forEach(button => button.style.display = 'none');
       }
 
       function handleFailed(event) {

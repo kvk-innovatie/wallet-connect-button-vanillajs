@@ -95,12 +95,14 @@ class WalletConnectButton {
       console.log("Disclosed attributes:", data);
       this.onSuccess(data);
       this.removeSearchParam('session_token');
+      this.removeSearchParam('nonce');
       this.setLoading(false);
     } catch (error) {
       console.log(error.message);
       this.setError(error.message);
-      // Remove session_token even when request fails
+      // Remove query params even when request fails
       this.removeSearchParam('session_token');
+      this.removeSearchParam('nonce');
       this.setLoading(false);
     }
   }

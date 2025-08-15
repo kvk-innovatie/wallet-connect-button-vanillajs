@@ -17,7 +17,7 @@ A vanilla JavaScript web component for NL Wallet Connect integration with Node.j
 ```bash
 git clone <repository-url>
 npm install
-npm run dev        # Build and start server on http://localhost:4000
+npm run dev        # Build and start server on http://localhost:4001
 ```
 
 ### 2. Production Usage (CDN)
