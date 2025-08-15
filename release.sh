@@ -21,6 +21,10 @@ echo "📦 Creating release v$VERSION..."
 echo "🔄 Updating version in src/index.html..."
 sed -i.bak "s|@v[0-9]*\.[0-9]*\.[0-9]*|@v$VERSION|g" src/index.html && rm src/index.html.bak
 
+# Update version in README.md
+echo "🔄 Updating version in README.md..."
+sed -i.bak "s|@v[0-9]*\.[0-9]*\.[0-9]*|@v$VERSION|g" README.md && rm README.md.bak
+
 # Add all changes
 git add .
 
