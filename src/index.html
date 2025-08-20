@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Wallet Connect Example</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       nl-wallet-button::part(button) {
         background: #467ee5;
@@ -27,8 +27,8 @@
     </div> -->
     <div>
       <wallet-connect-button
-        clientId="nlw_fe98ca6b35b25dbad0717ebb184dbe68"
-        apiKey="27ff4d0ceb03b0cd02a4b4d6fe4fe6436791223be38823bc97b8319a5991c769"
+        clientId="nlw_00bd5bc19d46a1c029c34a9a97e205af"
+        apiKey="1ee2dc76b6019aca9a9eb1c5c484e83fb168d2d22fb18a2ddb23dcb0ee1823c4"
         label="Deel gegevens met je wallet (quick and easy, frontend only)"
         lang="nl"
       />
@@ -40,11 +40,20 @@
         lang="en"
       />
     </div>
+    <div>
+      <wallet-connect-button
+        issuance
+        label="Add data to your wallet"
+        clientId="nlw_03d0a9d4516a41c61a5f2393eb8079f7"
+        helpBaseUrl="https://example.com/"
+        lang="en"
+      />
+    </div>
 
     <pre id="attributes-content"></pre>
 
-    <!-- <script src="wallet-connect-button.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/gh/kvk-innovatie/wallet-connect-button-vanillajs@v1.0.4/wallet-connect-button.js"></script>
+    <script src="wallet-connect-button.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/gh/kvk-innovatie/wallet-connect-button-vanillajs@v1.0.5/wallet-connect-button.js"></script> -->
     <script>
       function handleSuccess(event) {
         let attributes = event.detail;

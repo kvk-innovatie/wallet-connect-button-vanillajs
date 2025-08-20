@@ -1,7 +1,7 @@
 /**
  * Wallet Connect Button - Combined Build
  * Generated from src/ files
- * Build date: 2025-08-15T08:13:44.903Z
+ * Build date: 2025-08-20T18:10:06.711Z
  */
 
 /* ===== nl-wallet-web.js ===== */
@@ -7084,6 +7084,8 @@ class WalletConnectButton {
     this.walletConnectHost = options.walletConnectHost || "https://wallet-connect.eu";
     this.buttonText = options.buttonText || "Connect Wallet";
     this.lang = options.lang || "nl";
+    this.helpBaseUrl = options.helpBaseUrl;
+    this.issuance = options.issuance || false;
     
     this.loading = false;
     this.error = null;
@@ -7204,6 +7206,16 @@ class WalletConnectButton {
     this.render();
   }
 
+  constructURI(session_type) {
+    let request_uri = `https://issuance.wallet-connect.eu/disclosure/${this.clientId}/request_uri?session_type=${session_type}`;
+    let request_uri_method = "post";
+    let client_id_uri = `${this.clientId}.example.com`;
+
+    return `walletdebuginteraction://wallet.edi.rijksoverheid.nl/disclosure_based_issuance?request_uri=${encodeURIComponent(
+      request_uri
+    )}&request_uri_method=${request_uri_method}&client_id=${client_id_uri}`;
+  }
+
   render() {
     if (!this.container) return;
 
@@ -7233,12 +7245,18 @@ class WalletConnectButton {
 
     const startUrl = `${this.walletConnectHost}/api/create-session?lang=en&return_url=${encodeURIComponent(window.location.href)}`;
     
+    const helpBaseUrlAttr = this.helpBaseUrl ? ` help-base-url="${this.helpBaseUrl}"` : '';
+    const usecaseAttr = this.issuance ? '' : ` usecase="${this.clientId}"`;
+    const sameDeviceUl = this.constructURI("same_device");
+    const crossDeviceUl = this.constructURI("cross_device");
+    
     this.container.innerHTML = `
       <nl-wallet-button
-        text="${this.buttonText}"
-        usecase="${this.clientId}"
+        text="${this.buttonText}"${usecaseAttr}
         start-url="${startUrl}"
-        lang="${this.lang}"
+        lang="${this.lang}"${helpBaseUrlAttr}
+        same-device-ul="${sameDeviceUl}"
+        cross-device-ul="${crossDeviceUl}"
       ></nl-wallet-button>
     `;
 
@@ -7278,7 +7296,7 @@ class WalletConnectButtonElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['clientid', 'apikey', 'walletconnecthost', 'label', 'lang'];
+    return ['clientid', 'apikey', 'walletconnecthost', 'label', 'lang', 'helpbaseurl', 'issuance'];
   }
 
   connectedCallback() {
@@ -7289,6 +7307,8 @@ class WalletConnectButtonElement extends HTMLElement {
       walletConnectHost: this.getAttribute('walletConnectHost') || this.getAttribute('walletconnecthost') || 'https://wallet-connect.eu',
       buttonText: this.getAttribute('label') || 'Connect Wallet',
       lang: this.getAttribute('lang') || 'nl',
+      helpBaseUrl: this.getAttribute('helpBaseUrl') || this.getAttribute('helpbaseurl'),
+      issuance: this.hasAttribute('issuance'),
       onSuccess: (attributes) => {
         // Dispatch custom event for success
         this.dispatchEvent(new CustomEvent('success', {
@@ -7337,6 +7357,12 @@ class WalletConnectButtonElement extends HTMLElement {
           break;
         case 'lang':
           this.walletButton.lang = newValue;
+          break;
+        case 'helpbaseurl':
+          this.walletButton.helpBaseUrl = newValue;
+          break;
+        case 'issuance':
+          this.walletButton.issuance = this.hasAttribute('issuance');
           break;
       }
       this.walletButton.render();
