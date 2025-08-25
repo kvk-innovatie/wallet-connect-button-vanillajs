@@ -1,7 +1,7 @@
 /**
  * Wallet Connect Button - Combined Build
  * Generated from src/ files
- * Build date: 2025-08-20T18:10:06.711Z
+ * Build date: 2025-08-25T09:04:57.831Z
  */
 
 /* ===== nl-wallet-web.js ===== */
@@ -7176,7 +7176,10 @@ class WalletConnectButton {
       this.onSuccess(data);
       this.removeSearchParam('session_token');
       this.removeSearchParam('nonce');
-      this.setLoading(false);
+      // Small delay to allow the success handler to execute before clearing loading
+      setTimeout(() => {
+        this.setLoading(false);
+      }, 100);
     } catch (error) {
       console.log(error.message);
       this.setError(error.message);
