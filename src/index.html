@@ -27,15 +27,15 @@
     </div> -->
     <div>
       <wallet-connect-button
-        clientId="nlw_00bd5bc19d46a1c029c34a9a97e205af"
-        apiKey="1ee2dc76b6019aca9a9eb1c5c484e83fb168d2d22fb18a2ddb23dcb0ee1823c4"
+        clientId="nlw_e1a0c593aa29844c8ac202cd96fb048d"
+        apiKey="1cb1002b81174905e31a71f53423313dddeb67bc0c8c51a8e7b08e9e1b73177d"
         label="Deel gegevens met je wallet (quick and easy, frontend only)"
         lang="nl"
       />
     </div>
     <div>
       <wallet-connect-button
-        clientId="nlw_fe98ca6b35b25dbad0717ebb184dbe68"
+        clientId="nlw_e1a0c593aa29844c8ac202cd96fb048d"
         label="Deel gegevens met je wallet (secure, via backend)"
         lang="en"
       />
@@ -44,7 +44,7 @@
       <wallet-connect-button
         issuance
         label="Add data to your wallet"
-        clientId="nlw_03d0a9d4516a41c61a5f2393eb8079f7"
+        clientId="nlw_03691ef03dde4bd4f840b8581a7b2d7b"
         helpBaseUrl="https://example.com/"
         lang="en"
       />
@@ -68,10 +68,12 @@
         console.log("Something went wrong:", event.detail);
       }
 
-      const wallet_button = document.getElementsByTagName("wallet-connect-button")[0];
-
-      wallet_button.addEventListener("success", handleSuccess, false);
-      wallet_button.addEventListener("failed", handleFailed, false);
+      const wallet_buttons = document.getElementsByTagName("wallet-connect-button");
+      
+      Array.from(wallet_buttons).forEach(button => {
+        button.addEventListener("success", handleSuccess, false);
+        button.addEventListener("failed", handleFailed, false);
+      });
     </script>
   </body>
 </html>

@@ -98,7 +98,10 @@ class WalletConnectButton {
       this.onSuccess(data);
       this.removeSearchParam('session_token');
       this.removeSearchParam('nonce');
-      this.setLoading(false);
+      // Small delay to allow the success handler to execute before clearing loading
+      setTimeout(() => {
+        this.setLoading(false);
+      }, 100);
     } catch (error) {
       console.log(error.message);
       this.setError(error.message);
