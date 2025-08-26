@@ -132,7 +132,8 @@ class WalletConnectButton {
   }
 
   constructURI(session_type) {
-    let request_uri = `https://issuance.wallet-connect.eu/disclosure/${this.clientId}/request_uri?session_type=${session_type}`;
+    const host = this.walletConnectHost || "https://issuance.wallet-connect.eu";
+    let request_uri = `${host}/disclosure/${this.clientId}/request_uri?session_type=${session_type}`;
     let request_uri_method = "post";
     let client_id_uri = `${this.clientId}.example.com`;
 
