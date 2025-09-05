@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Proxy endpoint for disclosed attributes
 app.get('/api/disclosed-attributes*', async (req, res) => {
-  const apiKey = 'ee1c64c4e3d2f6bb1f9f0f4b9cabdffac1391966456e2e59760194b3478b2bad';
+  const apiKey = '4edafd47a67584c563d6fc3f4d105d2900062c57352ec3db2dc1c962b57dce2e';
   
   try {
     const response = await axios({

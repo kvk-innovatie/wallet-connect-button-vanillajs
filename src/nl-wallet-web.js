@@ -5293,7 +5293,7 @@ const {
     no: "No",
     confirm_stop_title: "Are you sure you want to stop?",
     confirm_stop_body: "If you stop now, no data will be shared.",
-    device_choice_title: "Which device is your NL Wallet is installed?",
+    device_choice_title: "On which device is your NL Wallet app installed?",
     device_choice_same_device: "On this device",
     device_choice_cross_device: "On another device",
     expired_title: "Sorry, time is over",
@@ -7023,7 +7023,7 @@ const tf = /* @__PURE__ */ ai(qu, [["render", ef]]), sf = {
       o.value = !1, i.value && i.value.focus();
     };
     Qs(Nn, c), Qs(Te, kr(s.lang));
-    const u = "0.3.0-dev";
+    const u = "0.4.0-dev";
     let h = new CSSStyleSheet();
     return h.replaceSync(`@font-face {
   font-family: "RO Sans";
