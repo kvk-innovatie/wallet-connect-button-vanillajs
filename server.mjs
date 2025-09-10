@@ -38,5 +38,5 @@ app.get('/api/disclosed-attributes*', async (req, res) => {
 });
 
 app.listen(4001, () => {
-  console.log('Node.js backend running on port 4001');
+  console.log('Node.js backend running on port http://localhost:4001');
 });

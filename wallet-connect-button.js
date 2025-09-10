@@ -1,7 +1,7 @@
 /**
  * Wallet Connect Button - Combined Build
  * Generated from src/ files
- * Build date: 2025-08-26T13:48:46.252Z
+ * Build date: 2025-09-10T08:36:18.943Z
  */
 
 /* ===== nl-wallet-web.js ===== */
@@ -5300,7 +5300,7 @@ const {
     no: "No",
     confirm_stop_title: "Are you sure you want to stop?",
     confirm_stop_body: "If you stop now, no data will be shared.",
-    device_choice_title: "Which device is your NL Wallet is installed?",
+    device_choice_title: "On which device is your NL Wallet app installed?",
     device_choice_same_device: "On this device",
     device_choice_cross_device: "On another device",
     expired_title: "Sorry, time is over",
@@ -7030,7 +7030,7 @@ const tf = /* @__PURE__ */ ai(qu, [["render", ef]]), sf = {
       o.value = !1, i.value && i.value.focus();
     };
     Qs(Nn, c), Qs(Te, kr(s.lang));
-    const u = "0.3.0-dev";
+    const u = "0.4.0-dev";
     let h = new CSSStyleSheet();
     return h.replaceSync(`@font-face {
   font-family: "RO Sans";
@@ -7299,18 +7299,18 @@ class WalletConnectButtonElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['clientid', 'apikey', 'walletconnecthost', 'label', 'lang', 'helpbaseurl', 'issuance'];
+    return ['clientid', 'client-id', 'apikey', 'api-key', 'walletconnecthost', 'wallet-connect-host', 'label', 'lang', 'helpbaseurl', 'help-base-url', 'issuance'];
   }
 
   connectedCallback() {
     // Create the wallet button instance
     this.walletButton = new WalletConnectButton({
-      clientId: this.getAttribute('clientId') || this.getAttribute('clientid'),
-      apiKey: this.getAttribute('apiKey') || this.getAttribute('apikey'),
-      walletConnectHost: this.getAttribute('walletConnectHost') || this.getAttribute('walletconnecthost') || 'https://wallet-connect.eu',
+      clientId: this.getAttribute('clientId') || this.getAttribute('clientid') || this.getAttribute('client-id'),
+      apiKey: this.getAttribute('apiKey') || this.getAttribute('apikey') || this.getAttribute('api-key'),
+      walletConnectHost: this.getAttribute('walletConnectHost') || this.getAttribute('walletconnecthost') || this.getAttribute('wallet-connect-host') || 'https://wallet-connect.eu',
       buttonText: this.getAttribute('label') || 'Connect Wallet',
       lang: this.getAttribute('lang') || 'nl',
-      helpBaseUrl: this.getAttribute('helpBaseUrl') || this.getAttribute('helpbaseurl'),
+      helpBaseUrl: this.getAttribute('helpBaseUrl') || this.getAttribute('helpbaseurl') || this.getAttribute('help-base-url'),
       issuance: this.hasAttribute('issuance'),
       onSuccess: (attributes) => {
         // Dispatch custom event for success
@@ -7347,12 +7347,15 @@ class WalletConnectButtonElement extends HTMLElement {
       // Update the wallet button properties when attributes change
       switch(name.toLowerCase()) {
         case 'clientid':
+        case 'client-id':
           this.walletButton.clientId = newValue;
           break;
         case 'apikey':
+        case 'api-key':
           this.walletButton.apiKey = newValue;
           break;
         case 'walletconnecthost':
+        case 'wallet-connect-host':
           this.walletButton.walletConnectHost = newValue;
           break;
         case 'label':
@@ -7362,6 +7365,7 @@ class WalletConnectButtonElement extends HTMLElement {
           this.walletButton.lang = newValue;
           break;
         case 'helpbaseurl':
+        case 'help-base-url':
           this.walletButton.helpBaseUrl = newValue;
           break;
         case 'issuance':
