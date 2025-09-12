@@ -1,7 +1,7 @@
 /**
  * Wallet Connect Button - Combined Build
  * Generated from src/ files
- * Build date: 2025-09-10T08:36:18.943Z
+ * Build date: 2025-09-12T16:14:57.621Z
  */
 
 /* ===== nl-wallet-web.js ===== */
@@ -7210,7 +7210,7 @@ class WalletConnectButton {
   }
 
   constructURI(session_type) {
-    let request_uri = `https://issuance.wallet-connect.eu/disclosure/${this.clientId}/request_uri?session_type=${session_type}`;
+    let request_uri = `${this.walletConnectHost}/disclosure/${this.clientId}/request_uri?session_type=${session_type}`;
     let request_uri_method = "post";
     let client_id_uri = `${this.clientId}.example.com`;
 

@@ -22,7 +22,7 @@ npm run dev        # Build and start server on http://localhost:4001
 
 ### 2. Production Usage (CDN)
 ```html
-<script src="https://cdn.jsdelivr.net/gh/kvk-innovatie/wallet-connect-button-vanillajs@v1.0.9/wallet-connect-button.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/kvk-innovatie/wallet-connect-button-vanillajs@v1.0.10/wallet-connect-button.js"></script>
 
 <wallet-connect-button
   clientId="your-client-id"

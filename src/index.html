@@ -47,6 +47,16 @@
         label="Add data to your wallet"
         client-id="nlw_66d939a49ec11a32856280dfeafe3f9d"
         help-base-url="https://example.com/"
+        wallet-connect-host="http://localhost:3021"
+        lang="en"
+      />
+    </div>
+    <div>
+      <wallet-connect-button
+        issuance
+        label="Add data to your wallet"
+        client-id="nlw_66d939a49ec11a32856280dfeafe3f9d"
+        help-base-url="https://example.com/"
         lang="en"
       />
     </div>
@@ -54,7 +64,7 @@
     <pre id="attributes-content"></pre>
 
     <script src="wallet-connect-button.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/gh/kvk-innovatie/wallet-connect-button-vanillajs@v1.0.9/wallet-connect-button.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/gh/kvk-innovatie/wallet-connect-button-vanillajs@v1.0.10/wallet-connect-button.js"></script> -->
     <script>
       function handleSuccess(event) {
         let attributes = event.detail;
