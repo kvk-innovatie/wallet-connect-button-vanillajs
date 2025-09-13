@@ -1,7 +1,7 @@
 /**
  * Wallet Connect Button - Combined Build
  * Generated from src/ files
- * Build date: 2025-09-12T16:14:57.621Z
+ * Build date: 2025-09-13T12:57:46.517Z
  */
 
 /* ===== nl-wallet-web.js ===== */
@@ -7081,11 +7081,11 @@ class WalletConnectButton {
     this.clientId = options.clientId;
     this.onSuccess = options.onSuccess || (() => {});
     this.apiKey = options.apiKey;
-    this.walletConnectHost = options.walletConnectHost || "https://wallet-connect.eu";
+    this.issuance = options.issuance || false;
+    this.walletConnectHost = options.walletConnectHost || (this.issuance ? "https://issuance.wallet-connect.eu" : "https://wallet-connect.eu");
     this.buttonText = options.buttonText || "Connect Wallet";
     this.lang = options.lang || "nl";
     this.helpBaseUrl = options.helpBaseUrl;
-    this.issuance = options.issuance || false;
     
     this.loading = false;
     this.error = null;
@@ -7303,15 +7303,18 @@ class WalletConnectButtonElement extends HTMLElement {
   }
 
   connectedCallback() {
+    const isIssuance = this.hasAttribute('issuance');
+    const defaultHost = isIssuance ? 'https://issuance.wallet-connect.eu' : 'https://wallet-connect.eu';
+    
     // Create the wallet button instance
     this.walletButton = new WalletConnectButton({
       clientId: this.getAttribute('clientId') || this.getAttribute('clientid') || this.getAttribute('client-id'),
       apiKey: this.getAttribute('apiKey') || this.getAttribute('apikey') || this.getAttribute('api-key'),
-      walletConnectHost: this.getAttribute('walletConnectHost') || this.getAttribute('walletconnecthost') || this.getAttribute('wallet-connect-host') || 'https://wallet-connect.eu',
+      walletConnectHost: this.getAttribute('walletConnectHost') || this.getAttribute('walletconnecthost') || this.getAttribute('wallet-connect-host') || defaultHost,
       buttonText: this.getAttribute('label') || 'Connect Wallet',
       lang: this.getAttribute('lang') || 'nl',
       helpBaseUrl: this.getAttribute('helpBaseUrl') || this.getAttribute('helpbaseurl') || this.getAttribute('help-base-url'),
-      issuance: this.hasAttribute('issuance'),
+      issuance: isIssuance,
       onSuccess: (attributes) => {
         // Dispatch custom event for success
         this.dispatchEvent(new CustomEvent('success', {
