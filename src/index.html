@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       nl-wallet-button::part(button) {
-        background: #467ee5;
-        border: none;
         border-radius: 6px;
         padding: 12px 20px;
-        color: white;
-        font-weight: 500;
-        cursor: pointer;
         margin: 4px;
+      }
+      nl-wallet-button::part(button-span) {
+        font-weight: bold;
       }
     </style>
   </head>
@@ -41,7 +39,7 @@
         lang="en"
       />
     </div>
-    <div>
+    <!-- <div>
       <wallet-connect-button
         issuance
         label="Add data to your wallet"
@@ -50,7 +48,7 @@
         wallet-connect-host="http://localhost:3021"
         lang="en"
       />
-    </div>
+    </div> -->
     <div>
       <wallet-connect-button
         issuance
