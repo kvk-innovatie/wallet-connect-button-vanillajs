@@ -27,7 +27,7 @@ npm run dev        # Build and start server on http://localhost:4001
 <wallet-connect-button
   clientId="your-client-id"
   apiKey="your-api-key"
-  label="Share data with your wallet"
+  label="Share data from your wallet"
   lang="en"
 ></wallet-connect-button>
 ```
