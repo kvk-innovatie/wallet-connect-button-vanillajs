@@ -1,6 +1,6 @@
 {
   "name": "wallet-connect-button-vanillajs",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Vanilla JavaScript Web Component for NL Wallet Connect integration",
   "main": "wallet-connect-button.js",
   "scripts": {

@@ -1,7 +1,7 @@
 /**
  * Wallet Connect Button - Combined Build
  * Generated from src/ files
- * Build date: 2025-09-13T12:57:46.517Z
+ * Build date: 2025-09-30T09:51:23.296Z
  */
 
 /* ===== nl-wallet-web.js ===== */
@@ -7076,6 +7076,9 @@ customElements.define("nl-wallet-button", Tf);
 
 
 /* ===== WalletConnectButton.js ===== */
+// Credentials cache for storing fetched credentials
+const credentialsCache = new Map();
+
 class WalletConnectButton {
   constructor(options = {}) {
     this.clientId = options.clientId;
@@ -7098,6 +7101,7 @@ class WalletConnectButton {
     this.handleSuccess = this.handleSuccess.bind(this);
     this.handleFailed = this.handleFailed.bind(this);
     this.handlePopState = this.handlePopState.bind(this);
+    this.handleButtonClick = this.handleButtonClick.bind(this);
     
     // Listen for URL changes
     window.addEventListener('popstate', this.handlePopState);
@@ -7131,6 +7135,7 @@ class WalletConnectButton {
       if (this.buttonElement) {
         this.buttonElement.addEventListener("success", this.handleSuccess);
         this.buttonElement.addEventListener("failed", this.handleFailed);
+        this.buttonElement.addEventListener("click", this.handleButtonClick);
       }
     } catch (error) {
       console.warn('Could not load nl-wallet-web.js:', error);
@@ -7154,6 +7159,148 @@ class WalletConnectButton {
 
   handleFailed(e) {
     console.log("Failed event received:", e.detail);
+  }
+
+  async fetchRequestedCredentials() {
+    if (!this.apiKey || !this.clientId) return [];
+    
+    const cacheKey = `${this.clientId}-${this.walletConnectHost || "default"}`;
+    
+    // Check if we already have data in cache
+    const cached = credentialsCache.get(cacheKey);
+    if (cached?.data) {
+      return cached.data;
+    }
+    
+    // Check if there's already a request in progress
+    if (cached?.promise) {
+      return await cached.promise;
+    }
+    
+    const fetchPromise = (async () => {
+      try {
+        const baseUrl = this.walletConnectHost || "https://wallet-connect.eu";
+        const url = `${baseUrl}/api/client/${this.clientId}/requested-credentials`;
+        const headers = { 'Authorization': `Bearer ${this.apiKey}` };
+        
+        const response = await fetch(url, { method: 'GET', headers });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const responseData = await response.json();
+        
+        // Extract credentials from the response
+        const credentials = responseData?.data?.requestedCredentials || [];
+        
+        // Cache the result
+        credentialsCache.set(cacheKey, { data: credentials });
+        return credentials;
+      } catch (error) {
+        // Remove failed request from cache
+        credentialsCache.delete(cacheKey);
+        throw error;
+      }
+    })();
+    
+    // Cache the promise to prevent duplicate requests
+    credentialsCache.set(cacheKey, { promise: fetchPromise });
+    
+    return await fetchPromise;
+  }
+
+  injectCredentialsIntoShadowDOM(credentials, retryCount = 0) {
+    const maxRetries = 10;
+    const walletButton = this.buttonElement;
+    
+    if (!walletButton || !walletButton.shadowRoot) {
+      return;
+    }
+
+    // Remove any existing credential info
+    const existingCredentials = walletButton.shadowRoot.querySelector('.required-credentials');
+    if (existingCredentials) {
+      existingCredentials.remove();
+    }
+
+    if (credentials.length === 0) return;
+
+    // Look for the modal and website section
+    const modal = walletButton.shadowRoot.querySelector('.modal');
+    if (!modal) {
+      // Retry if modal not found yet
+      if (retryCount < maxRetries) {
+        setTimeout(() => {
+          this.injectCredentialsIntoShadowDOM(credentials, retryCount + 1);
+        }, 200);
+        return;
+      }
+      return;
+    }
+
+    const websiteSection = modal.querySelector('.website');
+
+    // Determine language and translations
+    const isNL = this.lang === 'nl';
+    const headerText = isNL ? 'Benodigde Attestaties:' : 'Required Credentials:';
+    const getLinkText = isNL ? '→ Verkrijg attestatie' : '→ Get credential';
+
+    // Create credential info element
+    const credentialsDiv = document.createElement('div');
+    credentialsDiv.className = 'required-credentials';
+    credentialsDiv.innerHTML = `
+      <div style="
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 12px;
+        font-family: inherit;
+        font-size: 13px;
+        line-height: 1.4;
+      ">
+        <div style="margin: 0 0 8px 0; color: #212529; font-size: 14px; font-weight: 600;">${headerText}</div>
+        ${credentials.map(credential => {
+          const credentialName = isNL ? credential.credentialName.nl : credential.credentialName.en;
+          return `
+            <div style="margin-bottom: 6px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <span style="color: #495057; font-weight: 500;">${credentialName}</span>
+              ${credential.websiteUrl ? `
+                <a href="${credential.websiteUrl}" target="_blank" rel="noopener noreferrer" style="
+                  color: #0066cc;
+                  text-decoration: none;
+                  font-size: 12px;
+                  white-space: nowrap;
+                ">${getLinkText}</a>
+              ` : ''}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+
+    // Insert the credentials div after the website section
+    if (websiteSection) {
+      websiteSection.insertAdjacentElement('afterend', credentialsDiv);
+    } else {
+      // Fallback: insert at the beginning of modal
+      modal.insertBefore(credentialsDiv, modal.firstChild);
+    }
+  }
+
+  async handleButtonClick(event) {
+    try {
+      const credentials = await this.fetchRequestedCredentials();
+      
+      if (credentials && credentials.length > 0) {
+        // Inject credentials into the shadow DOM with multiple attempts
+        setTimeout(() => {
+          this.injectCredentialsIntoShadowDOM(credentials);
+        }, 100);
+      }
+    } catch (error) {
+      console.error('Failed to fetch credentials:', error);
+    }
   }
 
   async fetchDisclosedAttributes(sessionToken, nonce = null) {
@@ -7268,6 +7415,7 @@ class WalletConnectButton {
     if (this.buttonElement) {
       this.buttonElement.addEventListener("success", this.handleSuccess);
       this.buttonElement.addEventListener("failed", this.handleFailed);
+      this.buttonElement.addEventListener("click", this.handleButtonClick);
     }
   }
 
@@ -7282,6 +7430,7 @@ class WalletConnectButton {
     if (this.buttonElement) {
       this.buttonElement.removeEventListener("success", this.handleSuccess);
       this.buttonElement.removeEventListener("failed", this.handleFailed);
+      this.buttonElement.removeEventListener("click", this.handleButtonClick);
     }
     window.removeEventListener('popstate', this.handlePopState);
     
