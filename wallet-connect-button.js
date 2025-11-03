@@ -1,7 +1,7 @@
 /**
  * Wallet Connect Button - Combined Build
  * Generated from src/ files
- * Build date: 2025-09-30T09:51:23.296Z
+ * Build date: 2025-11-03T11:27:18.114Z
  */
 
 /* ===== nl-wallet-web.js ===== */
@@ -7085,7 +7085,9 @@ class WalletConnectButton {
     this.onSuccess = options.onSuccess || (() => {});
     this.apiKey = options.apiKey;
     this.issuance = options.issuance || false;
-    this.walletConnectHost = options.walletConnectHost || (this.issuance ? "https://issuance.wallet-connect.eu" : "https://wallet-connect.eu");
+    this.business = options.business || false;
+    this.useLocalWcServer = options.useLocalWcServer || false;
+    this.walletConnectHost = this.getDefaultHost();
     this.buttonText = options.buttonText || "Connect Wallet";
     this.lang = options.lang || "nl";
     this.helpBaseUrl = options.helpBaseUrl;
@@ -7105,6 +7107,24 @@ class WalletConnectButton {
     
     // Listen for URL changes
     window.addEventListener('popstate', this.handlePopState);
+  }
+
+  getDefaultHost() {
+    // If useLocalWcServer is set, use local server
+    if (this.useLocalWcServer) {
+      if (this.business) {
+        return this.issuance ? 'http://localhost:4007' : 'http://bw.localhost:3021';
+      }
+
+      return this.issuance ? 'http://localhost:3007' : 'http://localhost:3021';
+    }
+
+    // Otherwise use remote servers
+    if (this.business) {
+      return this.issuance ? 'https://bw.issuance.wallet-connect.eu' : 'https://bw.wallet-connect.eu';
+    }
+
+    return this.issuance ? 'https://issuance.wallet-connect.eu' : 'https://wallet-connect.eu';
   }
 
   // URL search params management
@@ -7233,7 +7253,7 @@ class WalletConnectButton {
       if (retryCount < maxRetries) {
         setTimeout(() => {
           this.injectCredentialsIntoShadowDOM(credentials, retryCount + 1);
-        }, 200);
+        }, 400);
         return;
       }
       return;
@@ -7296,7 +7316,7 @@ class WalletConnectButton {
         // Inject credentials into the shadow DOM with multiple attempts
         setTimeout(() => {
           this.injectCredentialsIntoShadowDOM(credentials);
-        }, 100);
+        }, 400);
       }
     } catch (error) {
       console.error('Failed to fetch credentials:', error);
@@ -7361,7 +7381,11 @@ class WalletConnectButton {
     let request_uri_method = "post";
     let client_id_uri = `${this.clientId}.example.com`;
 
-    return `walletdebuginteraction://wallet.edi.rijksoverheid.nl/disclosure_based_issuance?request_uri=${encodeURIComponent(
+    const deepLinkScheme = this.business
+      ? 'businesswalletdebuginteraction://wallet.kvk.rijksoverheid.nl'
+      : 'walletdebuginteraction://wallet.edi.rijksoverheid.nl';
+
+    return `${deepLinkScheme}/disclosure_based_issuance?request_uri=${encodeURIComponent(
       request_uri
     )}&request_uri_method=${request_uri_method}&client_id=${client_id_uri}`;
   }
@@ -7448,22 +7472,24 @@ class WalletConnectButtonElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['clientid', 'client-id', 'apikey', 'api-key', 'walletconnecthost', 'wallet-connect-host', 'label', 'lang', 'helpbaseurl', 'help-base-url', 'issuance'];
+    return ['clientid', 'client-id', 'apikey', 'api-key', 'use-local-wc-server', 'label', 'lang', 'helpbaseurl', 'help-base-url', 'issuance', 'business'];
   }
 
   connectedCallback() {
     const isIssuance = this.hasAttribute('issuance');
-    const defaultHost = isIssuance ? 'https://issuance.wallet-connect.eu' : 'https://wallet-connect.eu';
-    
+    const isBusiness = this.hasAttribute('business');
+    const useLocalWcServer = this.hasAttribute('use-local-wc-server');
+
     // Create the wallet button instance
     this.walletButton = new WalletConnectButton({
       clientId: this.getAttribute('clientId') || this.getAttribute('clientid') || this.getAttribute('client-id'),
       apiKey: this.getAttribute('apiKey') || this.getAttribute('apikey') || this.getAttribute('api-key'),
-      walletConnectHost: this.getAttribute('walletConnectHost') || this.getAttribute('walletconnecthost') || this.getAttribute('wallet-connect-host') || defaultHost,
       buttonText: this.getAttribute('label') || 'Connect Wallet',
       lang: this.getAttribute('lang') || 'nl',
       helpBaseUrl: this.getAttribute('helpBaseUrl') || this.getAttribute('helpbaseurl') || this.getAttribute('help-base-url'),
       issuance: isIssuance,
+      business: isBusiness,
+      useLocalWcServer: useLocalWcServer,
       onSuccess: (attributes) => {
         // Dispatch custom event for success
         this.dispatchEvent(new CustomEvent('success', {
@@ -7506,9 +7532,9 @@ class WalletConnectButtonElement extends HTMLElement {
         case 'api-key':
           this.walletButton.apiKey = newValue;
           break;
-        case 'walletconnecthost':
-        case 'wallet-connect-host':
-          this.walletButton.walletConnectHost = newValue;
+        case 'use-local-wc-server':
+          this.walletButton.useLocalWcServer = this.hasAttribute('use-local-wc-server');
+          this.walletButton.walletConnectHost = this.walletButton.getDefaultHost();
           break;
         case 'label':
           this.walletButton.buttonText = newValue;
@@ -7522,6 +7548,11 @@ class WalletConnectButtonElement extends HTMLElement {
           break;
         case 'issuance':
           this.walletButton.issuance = this.hasAttribute('issuance');
+          this.walletButton.walletConnectHost = this.walletButton.getDefaultHost();
+          break;
+        case 'business':
+          this.walletButton.business = this.hasAttribute('business');
+          this.walletButton.walletConnectHost = this.walletButton.getDefaultHost();
           break;
       }
       this.walletButton.render();
