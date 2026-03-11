@@ -38,7 +38,7 @@ class WalletConnectButton {
         return this.issuance ? 'http://localhost:4007' : 'http://bw.localhost:3021';
       }
 
-      return this.issuance ? 'http://localhost:3007' : 'http://localhost:3021';
+      return this.issuance ? 'http://localhost:5007' : 'http://localhost:3021';
     }
 
     // Otherwise use remote servers
@@ -342,6 +342,7 @@ class WalletConnectButton {
     const startUrl = `${this.walletConnectHost}/api/create-session?lang=en&return_url=${encodeURIComponent(window.location.href)}`;
     
     const helpBaseUrlAttr = this.helpBaseUrl ? ` help-base-url="${this.helpBaseUrl}"` : '';
+    const businessAttr = this.business ? ' business' : '';
     const usecaseAttr = this.issuance ? '' : ` usecase="${this.clientId}"`;
     const sameDeviceUl = this.constructURI("same_device");
     const crossDeviceUl = this.constructURI("cross_device");
@@ -350,7 +351,7 @@ class WalletConnectButton {
       <nl-wallet-button
         text="${this.buttonText}"${usecaseAttr}
         start-url="${startUrl}"
-        lang="${this.lang}"${helpBaseUrlAttr}
+        lang="${this.lang}"${helpBaseUrlAttr}${businessAttr}
         same-device-ul="${sameDeviceUl}"
         cross-device-ul="${crossDeviceUl}"
       ></nl-wallet-button>
