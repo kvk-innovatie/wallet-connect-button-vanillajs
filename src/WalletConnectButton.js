@@ -35,10 +35,10 @@ class WalletConnectButton {
     // If useLocalWcServer is set, use local server
     if (this.useLocalWcServer) {
       if (this.business) {
-        return this.issuance ? 'http://localhost:4007' : 'http://bw.localhost:3021';
+        return this.issuance ? 'http://localhost:5017' : 'http://bw.localhost:5021';
       }
 
-      return this.issuance ? 'http://localhost:5007' : 'http://localhost:3021';
+      return this.issuance ? 'http://localhost:5007' : 'http://localhost:5021';
     }
 
     // Otherwise use remote servers
@@ -301,7 +301,7 @@ class WalletConnectButton {
   constructURI(session_type) {
     let request_uri = `${this.walletConnectHost}/disclosure/${this.clientId}/request_uri?session_type=${session_type}`;
     let request_uri_method = "post";
-    let client_id_uri = `${this.clientId}.example.com`;
+    let client_id_uri = `x509_san_dns:${new URL(this.walletConnectHost).hostname}`;
 
     const deepLinkScheme = this.business
       ? 'businesswalletdebuginteraction://wallet.kvk.rijksoverheid.nl'
@@ -339,7 +339,8 @@ class WalletConnectButton {
       return;
     }
 
-    const startUrl = `${this.walletConnectHost}/api/create-session?lang=en&return_url=${encodeURIComponent(window.location.href)}`;
+    const startHost = this.apiKey ? this.walletConnectHost : "";
+    const startUrl = `${startHost}/api/create-session?lang=en&return_url=${encodeURIComponent(window.location.href)}`;
     
     const helpBaseUrlAttr = this.helpBaseUrl ? ` help-base-url="${this.helpBaseUrl}"` : '';
     const businessAttr = this.business ? ' business' : '';
