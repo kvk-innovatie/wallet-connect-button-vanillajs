@@ -8,6 +8,7 @@ class WalletConnectButton {
     this.apiKey = options.apiKey;
     this.issuance = options.issuance || false;
     this.business = options.business || false;
+    this.over18 = options.over18 || false;
     this.useLocalWcServer = options.useLocalWcServer || false;
     this.walletConnectHost = this.getDefaultHost();
     this.buttonText = options.buttonText || "Connect Wallet";
@@ -344,6 +345,7 @@ class WalletConnectButton {
     
     const helpBaseUrlAttr = this.helpBaseUrl ? ` help-base-url="${this.helpBaseUrl}"` : '';
     const businessAttr = this.business ? ' business' : '';
+    const over18Attr = this.over18 ? ' over18' : '';
     const usecaseAttr = this.issuance ? '' : ` usecase="${this.clientId}"`;
     const sameDeviceUl = this.constructURI("same_device");
     const crossDeviceUl = this.constructURI("cross_device");
@@ -352,7 +354,7 @@ class WalletConnectButton {
       <nl-wallet-button
         text="${this.buttonText}"${usecaseAttr}
         start-url="${startUrl}"
-        lang="${this.lang}"${helpBaseUrlAttr}${businessAttr}
+        lang="${this.lang}"${helpBaseUrlAttr}${businessAttr}${over18Attr}
         same-device-ul="${sameDeviceUl}"
         cross-device-ul="${crossDeviceUl}"
       ></nl-wallet-button>
@@ -396,12 +398,13 @@ class WalletConnectButtonElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['clientid', 'client-id', 'apikey', 'api-key', 'use-local-wc-server', 'label', 'lang', 'helpbaseurl', 'help-base-url', 'issuance', 'business'];
+    return ['clientid', 'client-id', 'apikey', 'api-key', 'use-local-wc-server', 'label', 'lang', 'helpbaseurl', 'help-base-url', 'issuance', 'business', 'over18'];
   }
 
   connectedCallback() {
     const isIssuance = this.hasAttribute('issuance');
     const isBusiness = this.hasAttribute('business');
+    const isOver18 = this.hasAttribute('over18');
     const useLocalWcServer = this.hasAttribute('use-local-wc-server');
 
     // Create the wallet button instance
@@ -413,6 +416,7 @@ class WalletConnectButtonElement extends HTMLElement {
       helpBaseUrl: this.getAttribute('helpBaseUrl') || this.getAttribute('helpbaseurl') || this.getAttribute('help-base-url'),
       issuance: isIssuance,
       business: isBusiness,
+      over18: isOver18,
       useLocalWcServer: useLocalWcServer,
       onSuccess: (attributes) => {
         // Dispatch custom event for success
@@ -477,6 +481,9 @@ class WalletConnectButtonElement extends HTMLElement {
         case 'business':
           this.walletButton.business = this.hasAttribute('business');
           this.walletButton.walletConnectHost = this.walletButton.getDefaultHost();
+          break;
+        case 'over18':
+          this.walletButton.over18 = this.hasAttribute('over18');
           break;
       }
       this.walletButton.render();
