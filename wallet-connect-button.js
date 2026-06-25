@@ -8062,7 +8062,7 @@ class WalletConnectButton {
     let client_id_uri = `x509_san_dns:${new URL(this.walletConnectHost).hostname}`;
 
     const deepLinkScheme = this.business
-      ? 'businesswalletdebuginteraction://wallet.kvk.rijksoverheid.nl'
+      ? 'businesswalletdebuginteraction://ebwallet.org'
       : 'walletdebuginteraction://wallet.edi.rijksoverheid.nl';
 
     return `${deepLinkScheme}/disclosure_based_issuance?request_uri=${encodeURIComponent(
