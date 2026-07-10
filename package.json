@@ -1,7 +1,7 @@
 {
   "name": "wallet-connect-button-vanillajs",
   "version": "1.0.18",
-  "description": "Vanilla JavaScript Web Component for NL Wallet Connect integration",
+  "description": "Vanilla JavaScript Web Component for NP Wallet Connect integration",
   "main": "wallet-connect-button.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

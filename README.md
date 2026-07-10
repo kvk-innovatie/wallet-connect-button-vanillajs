@@ -1,6 +1,6 @@
 # Wallet Connect Button - Vanilla JS
 
-A vanilla JavaScript web component for NL Wallet Connect integration with Node.js backend example. For further explanation and documentation, visit: https://wallet-connect.eu
+A vanilla JavaScript web component for NP Wallet Connect integration with Node.js backend example. For further explanation and documentation, visit: https://wallet-connect.eu
 
 ## Features
 
@@ -38,7 +38,7 @@ npm run dev        # Build and start server on http://localhost:5031
 ├── src/                          # Source files
 │   ├── index.html               # Example HTML page
 │   ├── WalletConnectButton.js   # Web component source
-│   └── nl-wallet-web.js         # NL Wallet library
+│   └── nl-wallet-web.js         # NP Wallet library
 ├── public/                       # Auto-generated (gitignored)
 │   ├── index.html               # Built from src/
 │   └── wallet-connect-button.js # Combined component
