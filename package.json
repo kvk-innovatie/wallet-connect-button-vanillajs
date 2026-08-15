@@ -1,6 +1,6 @@
 {
   "name": "wallet-connect-button-vanillajs",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "Vanilla JavaScript Web Component for NP Wallet Connect integration",
   "main": "wallet-connect-button.js",
   "scripts": {

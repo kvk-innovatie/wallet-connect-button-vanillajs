@@ -9,6 +9,7 @@ class WalletConnectButton {
     this.issuance = options.issuance || false;
     this.business = options.business || false;
     this.over18 = options.over18 || false;
+    this.nbwallet = options.nbwallet || false;
     this.useLocalWcServer = options.useLocalWcServer || false;
     this.walletConnectHost = this.getDefaultHost();
     this.buttonText = options.buttonText || "Connect Wallet";
@@ -33,6 +34,10 @@ class WalletConnectButton {
   }
 
   getDefaultHost() {
+    if (this.nbwallet) {
+      return this.useLocalWcServer ? 'http://localhost:9070' : 'https://nbwallet.org/wc';
+    }
+
     // If useLocalWcServer is set, use local server
     if (this.useLocalWcServer) {
       if (this.business) {
@@ -304,7 +309,9 @@ class WalletConnectButton {
     let request_uri_method = "post";
     let client_id_uri = `x509_san_dns:${new URL(this.walletConnectHost).hostname}`;
 
-    const deepLinkScheme = this.business
+    const deepLinkScheme = this.nbwallet
+      ? 'businesswalletdebuginteraction://nbwallet.org'
+      : this.business
       ? 'businesswalletdebuginteraction://ebwallet.org'
       : 'walletdebuginteraction://wallet.edi.rijksoverheid.nl';
 
@@ -346,17 +353,18 @@ class WalletConnectButton {
     const helpBaseUrlAttr = this.helpBaseUrl ? ` help-base-url="${this.helpBaseUrl}"` : '';
     const businessAttr = this.business ? ' business' : '';
     const over18Attr = this.over18 ? ' over18' : '';
+    const nbwalletAttr = this.nbwallet ? ' nbwallet' : '';
     const usecaseAttr = this.issuance ? '' : ` usecase="${this.clientId}"`;
-    const sameDeviceUl = this.constructURI("same_device");
-    const crossDeviceUl = this.constructURI("cross_device");
-    
+    const sameDeviceUl = this.nbwallet ? null : this.constructURI("same_device");
+    const crossDeviceUl = this.nbwallet ? null : this.constructURI("cross_device");
+    const sameDeviceUlAttr = sameDeviceUl ? ` same-device-ul="${sameDeviceUl}"` : '';
+    const crossDeviceUlAttr = crossDeviceUl ? ` cross-device-ul="${crossDeviceUl}"` : '';
+
     this.container.innerHTML = `
       <nl-wallet-button
         text="${this.buttonText}"${usecaseAttr}
         start-url="${startUrl}"
-        lang="${this.lang}"${helpBaseUrlAttr}${businessAttr}${over18Attr}
-        same-device-ul="${sameDeviceUl}"
-        cross-device-ul="${crossDeviceUl}"
+        lang="${this.lang}"${helpBaseUrlAttr}${businessAttr}${over18Attr}${nbwalletAttr}${sameDeviceUlAttr}${crossDeviceUlAttr}
       ></nl-wallet-button>
     `;
 
@@ -398,13 +406,14 @@ class WalletConnectButtonElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['clientid', 'client-id', 'apikey', 'api-key', 'use-local-wc-server', 'label', 'lang', 'helpbaseurl', 'help-base-url', 'issuance', 'business', 'over18'];
+    return ['clientid', 'client-id', 'apikey', 'api-key', 'use-local-wc-server', 'label', 'lang', 'helpbaseurl', 'help-base-url', 'issuance', 'business', 'over18', 'nbwallet'];
   }
 
   connectedCallback() {
     const isIssuance = this.hasAttribute('issuance');
     const isBusiness = this.hasAttribute('business');
     const isOver18 = this.hasAttribute('over18');
+    const isNbwallet = this.hasAttribute('nbwallet');
     const useLocalWcServer = this.hasAttribute('use-local-wc-server');
 
     // Create the wallet button instance
@@ -417,6 +426,7 @@ class WalletConnectButtonElement extends HTMLElement {
       issuance: isIssuance,
       business: isBusiness,
       over18: isOver18,
+      nbwallet: isNbwallet,
       useLocalWcServer: useLocalWcServer,
       onSuccess: (attributes) => {
         // Dispatch custom event for success
@@ -484,6 +494,10 @@ class WalletConnectButtonElement extends HTMLElement {
           break;
         case 'over18':
           this.walletButton.over18 = this.hasAttribute('over18');
+          break;
+        case 'nbwallet':
+          this.walletButton.nbwallet = this.hasAttribute('nbwallet');
+          this.walletButton.walletConnectHost = this.walletButton.getDefaultHost();
           break;
       }
       this.walletButton.render();
