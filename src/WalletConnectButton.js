@@ -35,7 +35,7 @@ class WalletConnectButton {
 
   getDefaultHost() {
     if (this.nbwallet) {
-      return this.useLocalWcServer ? 'http://localhost:9070' : 'https://nbwallet.org/wc';
+      return this.useLocalWcServer ? 'http://localhost:9070' : 'https://wc.nbwallet.org';
     }
 
     // If useLocalWcServer is set, use local server
