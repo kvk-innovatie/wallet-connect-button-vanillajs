@@ -34,8 +34,13 @@ class WalletConnectButton {
   }
 
   getDefaultHost() {
+    // NB Wallet: nb-wallet-connect (connect.nbwallet.org); the issuance
+    // server has its own host.
     if (this.nbwallet) {
-      return this.useLocalWcServer ? 'http://localhost:9070' : 'https://wc.nbwallet.org';
+      if (this.useLocalWcServer) {
+        return this.issuance ? 'http://localhost:5017' : 'http://localhost:5021';
+      }
+      return this.issuance ? 'https://issuance.connect.nbwallet.org' : 'https://connect.nbwallet.org';
     }
 
     // If useLocalWcServer is set, use local server
@@ -53,6 +58,16 @@ class WalletConnectButton {
     }
 
     return this.issuance ? 'https://issuance.wallet-connect.eu' : 'https://wallet-connect.eu';
+  }
+
+  // Per-wallet-type help-base-url. An explicit helpBaseUrl option wins;
+  // otherwise fall back to the wallet's own help page (NP Wallet by default).
+  getHelpBaseUrl() {
+    if (this.helpBaseUrl) return this.helpBaseUrl;
+    if (this.nbwallet) return 'https://nbwallet.org/download';
+    if (this.over18) return 'https://18up.eu/nl/install/';
+    if (this.business) return 'https://ebwallet.org/download';
+    return 'https://npwallet.org/';
   }
 
   // URL search params management
@@ -350,13 +365,17 @@ class WalletConnectButton {
     const startHost = this.apiKey ? this.walletConnectHost : "";
     const startUrl = `${startHost}/api/create-session?lang=en&return_url=${encodeURIComponent(window.location.href)}`;
     
-    const helpBaseUrlAttr = this.helpBaseUrl ? ` help-base-url="${this.helpBaseUrl}"` : '';
+    const helpBaseUrlAttr = ` help-base-url="${this.getHelpBaseUrl()}"`;
     const businessAttr = this.business ? ' business' : '';
     const over18Attr = this.over18 ? ' over18' : '';
     const nbwalletAttr = this.nbwallet ? ' nbwallet' : '';
     const usecaseAttr = this.issuance ? '' : ` usecase="${this.clientId}"`;
-    const sameDeviceUl = this.nbwallet ? null : this.constructURI("same_device");
-    const crossDeviceUl = this.nbwallet ? null : this.constructURI("cross_device");
+    // Disclosure uses the dynamic strategy — the modal creates the session and
+    // the status response carries the universal link — so only issuance needs
+    // the static same/cross-device links.
+    const useStaticLinks = this.issuance;
+    const sameDeviceUl = useStaticLinks ? this.constructURI("same_device") : null;
+    const crossDeviceUl = useStaticLinks ? this.constructURI("cross_device") : null;
     const sameDeviceUlAttr = sameDeviceUl ? ` same-device-ul="${sameDeviceUl}"` : '';
     const crossDeviceUlAttr = crossDeviceUl ? ` cross-device-ul="${crossDeviceUl}"` : '';
 
