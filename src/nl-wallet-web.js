@@ -7244,7 +7244,7 @@ const dd = (e, t) => {
     helpBaseUrl: {}
   },
   setup(e) {
-    const t = e, s = new URL("/deeplink", t.helpBaseUrl).toString(), n = He(De);
+    const s = e.helpBaseUrl.toString(), n = He(De);
     return (o, r) => (z(), Q("section", Cd, [
       T("p", null, Z(B(n)("help_title")), 1),
       T("p", null, [
