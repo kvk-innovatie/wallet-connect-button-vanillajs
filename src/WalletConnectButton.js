@@ -325,7 +325,7 @@ class WalletConnectButton {
     let client_id_uri = `x509_san_dns:${new URL(this.walletConnectHost).hostname}`;
 
     const deepLinkScheme = this.nbwallet
-      ? 'businesswalletdebuginteraction://nbwallet.org'
+      ? 'https://nbwallet.org/deeplink'
       : this.business
       ? 'businesswalletdebuginteraction://ebwallet.org'
       : 'walletdebuginteraction://wallet.edi.rijksoverheid.nl';
@@ -370,6 +370,7 @@ class WalletConnectButton {
     const over18Attr = this.over18 ? ' over18' : '';
     const nbwalletAttr = this.nbwallet ? ' nbwallet' : '';
     const usecaseAttr = this.issuance ? '' : ` usecase="${this.clientId}"`;
+    const clientIdAttr = this.clientId ? ` client-id="${this.clientId}"` : '';
     // Disclosure uses the dynamic strategy — the modal creates the session and
     // the status response carries the universal link — so only issuance needs
     // the static same/cross-device links.
@@ -381,7 +382,7 @@ class WalletConnectButton {
 
     this.container.innerHTML = `
       <nl-wallet-button
-        text="${this.buttonText}"${usecaseAttr}
+        text="${this.buttonText}"${usecaseAttr}${clientIdAttr}
         start-url="${startUrl}"
         lang="${this.lang}"${helpBaseUrlAttr}${businessAttr}${over18Attr}${nbwalletAttr}${sameDeviceUlAttr}${crossDeviceUlAttr}
       ></nl-wallet-button>
