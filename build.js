@@ -30,10 +30,18 @@ combinedContent += `/**
 
 `;
 
+// Allow pointing nl-wallet-web.js at an external build (e.g. the wallet_web
+// dist in the business-wallet repo) via WALLET_WEB_JS, instead of the committed
+// src/ copy. Defaults to src/nl-wallet-web.js so normal builds are unaffected.
+const nlWalletWebOverride = process.env.WALLET_WEB_JS;
+
 // Process each source file
 for (const filename of sourceFiles) {
-  const filePath = path.join(srcDir, filename);
-  
+  const filePath =
+    filename === 'nl-wallet-web.js' && nlWalletWebOverride
+      ? nlWalletWebOverride
+      : path.join(srcDir, filename);
+
   if (!fs.existsSync(filePath)) {
     console.error(`❌ Source file not found: ${filePath}`);
     process.exit(1);

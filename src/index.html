@@ -30,6 +30,16 @@
     <div>
       <h1>Share data with your wallet</h1>
       <div>
+        <h2>nb wallet</h2>
+        <wallet-connect-button
+          client-id="nbw_e2d91e953713f96675a30616917a36e7"
+          api-key="f1e2720e399ccf3f61741212068c629fb8fd845526ce004b192e2a6f7b43fdea"
+          label="Share data with your wallet (quick and easy, only frontend)"
+          lang="en"
+          nbwallet
+        ></wallet-connect-button>
+      </div>
+      <div>
         <h2>Using local Wallet-Connect server</h2>
         <div>
           <h3>With your personal wallet</h3>
@@ -149,7 +159,7 @@
     <pre id="attributes-content"></pre>
 
     <script src="wallet-connect-button.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/gh/kvk-innovatie/wallet-connect-button-vanillajs@v1.0.27/wallet-connect-button.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/gh/kvk-innovatie/wallet-connect-button-vanillajs@v1.0.28/wallet-connect-button.js"></script> -->
     <script>
       function handleSuccess(event) {
         let attributes = event.detail;

@@ -1,13 +1,14 @@
 {
   "name": "wallet-connect-button-vanillajs",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "description": "Vanilla JavaScript Web Component for NP Wallet Connect integration",
   "main": "wallet-connect-button.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node build.js",
     "start": "node server.mjs",
-    "dev": "nodemon --watch src --watch build.js --watch server.mjs --ext js,mjs,html,css --exec \"npm run build && node server.mjs\""
+    "dev": "nodemon --watch src --watch build.js --watch server.mjs --ext js,mjs,html,css --exec \"npm run build && node server.mjs\"",
+    "dev:walletweb": "WALLET_WEB_JS=../../../business-wallet/wallet_web/dist/nl-wallet-web.js nodemon --watch src --watch build.js --watch server.mjs --watch ../../../business-wallet/wallet_web/dist/nl-wallet-web.js --ext js,mjs,html,css --exec \"npm run build && node server.mjs\""
   },
   "keywords": [
     "wallet",
