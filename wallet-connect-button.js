@@ -1,7 +1,7 @@
 /**
  * Wallet Connect Button - Combined Build
  * Generated from src/ files
- * Build date: 2026-09-23T14:24:29.936Z
+ * Build date: 2026-09-23T17:36:15.614Z
  */
 
 /* ===== nl-wallet-web.js ===== */
