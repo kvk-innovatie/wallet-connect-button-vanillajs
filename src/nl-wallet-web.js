@@ -7273,7 +7273,7 @@ const Cd = (e, t) => {
   },
   setup(e) {
     const t = e, s = Ce(Xs, !1), n = ot(() => s && !!t.clientId), o = (l) => {
-      const a = new URL(t.helpBaseUrl.toString());
+      const a = new URL("/deeplink/onboarding", t.helpBaseUrl);
       return a.searchParams.set("client_id", t.clientId), a.searchParams.set("role", l), a.toString();
     }, r = ot(() => t.helpBaseUrl.toString()), i = ot(() => o("director")), c = ot(() => o("employee")), f = He(De);
     return (l, a) => n.value ? (z(), Q("section", Dd, [
