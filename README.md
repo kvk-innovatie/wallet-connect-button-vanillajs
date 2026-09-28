@@ -25,7 +25,7 @@ npm run dev        # Build and start server on http://localhost:5031
 <script src="https://cdn.jsdelivr.net/gh/kvk-innovatie/wallet-connect-button-vanillajs@v1.0.30/wallet-connect-button.js"></script>
 
 <wallet-connect-button
-  clientId="your-client-id"
+  service-id="your-service-id"
   apiKey="your-api-key"
   label="Share data from your wallet"
   lang="en"
@@ -51,7 +51,15 @@ npm run dev        # Build and start server on http://localhost:5031
 ## Web Component API
 
 ### Attributes
-- `clientId` - Your wallet connect client ID (required)
+- `service-id` - The registration's identifier. NB Wallet Connect calls it a
+  **service id**: one company registers a service per website or application.
+- `client-id` - The original name for the same value, still fully supported.
+  Give either one; `service-id` wins when both are set.
+
+With the `nbwallet` attribute the button talks to NB Wallet Connect, which has renamed
+this identifier throughout its API (`service_id`, `/api/service/...`). Every other
+variant still calls its host with `client_id`. That switch is automatic; you only
+choose which prop name to write.
 - `apiKey` - Your API key (optional)
 - `walletConnectHost` - Wallet connect host URL (optional, defaults to https://wallet-connect.eu)
 - `label` - Button text (optional, defaults to "Connect Wallet")

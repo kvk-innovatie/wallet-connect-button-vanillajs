@@ -3,7 +3,10 @@ const credentialsCache = new Map();
 
 class WalletConnectButton {
   constructor(options = {}) {
-    this.clientId = options.clientId;
+    // `serviceId` and `clientId` are two names for the same value: NB Wallet
+    // Connect calls it a service id (one company registers a service per
+    // website or application). `serviceId` wins when both are given.
+    this.clientId = options.serviceId ?? options.clientId;
     this.onSuccess = options.onSuccess || (() => {});
     this.apiKey = options.apiKey;
     this.issuance = options.issuance || false;
@@ -124,6 +127,11 @@ class WalletConnectButton {
     console.log("Failed event received:", e.detail);
   }
 
+  // NB Wallet Connect renamed the identifier to "service id" across its API;
+  // the other wallet-connect hosts still speak client id.
+  idParam() { return this.nbwallet ? 'service_id' : 'client_id'; }
+  idPath() { return this.nbwallet ? 'service' : 'client'; }
+
   async fetchRequestedCredentials() {
     if (!this.apiKey || !this.clientId) return [];
     
@@ -143,7 +151,7 @@ class WalletConnectButton {
     const fetchPromise = (async () => {
       try {
         const baseUrl = this.walletConnectHost || "https://wallet-connect.eu";
-        const url = `${baseUrl}/api/client/${this.clientId}/requested-credentials`;
+        const url = `${baseUrl}/api/${this.idPath()}/${this.clientId}/requested-credentials`;
         const headers = { 'Authorization': `Bearer ${this.apiKey}` };
         
         const response = await fetch(url, { method: 'GET', headers });
@@ -270,7 +278,7 @@ class WalletConnectButton {
     this.setLoading(true);
     
     const host = this.apiKey ? this.walletConnectHost || "https://wallet-connect.eu" : "";
-    let url = `${host}/api/disclosed-attributes?session_token=${sessionToken}&client_id=${this.clientId}`;
+    let url = `${host}/api/disclosed-attributes?session_token=${sessionToken}&${this.idParam()}=${this.clientId}`;
     if (nonce) url = `${url}&nonce=${nonce}`;
 
     const headers = this.apiKey ? { 'Authorization': `Bearer ${this.apiKey}` } : {};
@@ -370,7 +378,9 @@ class WalletConnectButton {
     const over18Attr = this.over18 ? ' over18' : '';
     const nbwalletAttr = this.nbwallet ? ' nbwallet' : '';
     const usecaseAttr = this.issuance ? '' : ` usecase="${this.clientId}"`;
-    const clientIdAttr = this.clientId ? ` client-id="${this.clientId}"` : '';
+    // The inner button is a vendored wallet_web build: older copies know only
+    // client-id, newer ones prefer service-id. Send both, same value.
+    const clientIdAttr = this.clientId ? ` client-id="${this.clientId}" service-id="${this.clientId}"` : '';
     // Disclosure uses the dynamic strategy — the modal creates the session and
     // the status response carries the universal link — so only issuance needs
     // the static same/cross-device links.
@@ -426,7 +436,7 @@ class WalletConnectButtonElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['clientid', 'client-id', 'apikey', 'api-key', 'use-local-wc-server', 'label', 'lang', 'helpbaseurl', 'help-base-url', 'issuance', 'business', 'over18', 'nbwallet'];
+    return ['clientid', 'client-id', 'serviceid', 'service-id', 'apikey', 'api-key', 'use-local-wc-server', 'label', 'lang', 'helpbaseurl', 'help-base-url', 'issuance', 'business', 'over18', 'nbwallet'];
   }
 
   connectedCallback() {
@@ -438,7 +448,8 @@ class WalletConnectButtonElement extends HTMLElement {
 
     // Create the wallet button instance
     this.walletButton = new WalletConnectButton({
-      clientId: this.getAttribute('clientId') || this.getAttribute('clientid') || this.getAttribute('client-id'),
+      clientId: this.getAttribute('serviceId') || this.getAttribute('serviceid') || this.getAttribute('service-id')
+        || this.getAttribute('clientId') || this.getAttribute('clientid') || this.getAttribute('client-id'),
       apiKey: this.getAttribute('apiKey') || this.getAttribute('apikey') || this.getAttribute('api-key'),
       buttonText: this.getAttribute('label') || 'Connect Wallet',
       lang: this.getAttribute('lang') || 'nl',
@@ -484,6 +495,8 @@ class WalletConnectButtonElement extends HTMLElement {
       switch(name.toLowerCase()) {
         case 'clientid':
         case 'client-id':
+        case 'serviceid':
+        case 'service-id':
           this.walletButton.clientId = newValue;
           break;
         case 'apikey':
