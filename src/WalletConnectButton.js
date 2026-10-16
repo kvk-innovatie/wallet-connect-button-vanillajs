@@ -377,6 +377,9 @@ class WalletConnectButton {
     const businessAttr = this.business ? ' business' : '';
     const over18Attr = this.over18 ? ' over18' : '';
     const nbwalletAttr = this.nbwallet ? ' nbwallet' : '';
+    // Tells the inner button's help section this is an issuance: one download link for
+    // any wallet holder instead of the director/employee links of a disclosure.
+    const issuanceAttr = this.issuance ? ' issuance' : '';
     const usecaseAttr = this.issuance ? '' : ` usecase="${this.clientId}"`;
     // The inner button is a vendored wallet_web build: older copies know only
     // client-id, newer ones prefer service-id. Send both, same value.
@@ -394,7 +397,7 @@ class WalletConnectButton {
       <nl-wallet-button
         text="${this.buttonText}"${usecaseAttr}${clientIdAttr}
         start-url="${startUrl}"
-        lang="${this.lang}"${helpBaseUrlAttr}${businessAttr}${over18Attr}${nbwalletAttr}${sameDeviceUlAttr}${crossDeviceUlAttr}
+        lang="${this.lang}"${helpBaseUrlAttr}${businessAttr}${over18Attr}${nbwalletAttr}${issuanceAttr}${sameDeviceUlAttr}${crossDeviceUlAttr}
       ></nl-wallet-button>
     `;
 
