@@ -1,6 +1,9 @@
 // Credentials cache for storing fetched credentials
 const credentialsCache = new Map();
 
+// `type` of the message a host page posts into the iframe to hand over a finished session.
+const SESSION_MESSAGE_TYPE = 'wallet-connect-session';
+
 class WalletConnectButton {
   constructor(options = {}) {
     // `serviceId` and `clientId` are two names for the same value: NB Wallet
@@ -18,7 +21,13 @@ class WalletConnectButton {
     this.buttonText = options.buttonText || "Connect Wallet";
     this.lang = options.lang || "nl";
     this.helpBaseUrl = options.helpBaseUrl;
-    
+    // Where the wallet app sends the user after a same-device disclosure; the
+    // verifier appends `session_token` to it. Defaults to the address of the
+    // document the button lives in, which is wrong inside an iframe: set it to
+    // the page that contains the iframe, and have that page hand the token to
+    // the iframe (see "Embedding in an iframe" in the README).
+    this.returnUrl = options.returnUrl;
+
     this.loading = false;
     this.error = null;
     this.searchParams = new URLSearchParams(window.location.search);
@@ -31,9 +40,38 @@ class WalletConnectButton {
     this.handleFailed = this.handleFailed.bind(this);
     this.handlePopState = this.handlePopState.bind(this);
     this.handleButtonClick = this.handleButtonClick.bind(this);
-    
+    this.handleMessage = this.handleMessage.bind(this);
+
     // Listen for URL changes
     window.addEventListener('popstate', this.handlePopState);
+    // Inside an iframe the wallet returns to the host page, not to this
+    // document; the host page hands the token over by posting it in.
+    window.addEventListener('message', this.handleMessage);
+  }
+
+  // The full return URL: the explicit one resolved against this document, else this document.
+  getReturnUrl() {
+    return this.returnUrl ? new URL(this.returnUrl, window.location.href).toString() : window.location.href;
+  }
+
+  // The session token and nonce out of a host page's message, or null when the
+  // event is not such a message. Only the page the wallet returns to may hand
+  // over a token, so the sender's origin must be the return URL's origin.
+  sessionFromMessage(event) {
+    const data = event.data;
+    if (!data || typeof data !== 'object' || data.type !== SESSION_MESSAGE_TYPE) return null;
+    if (typeof data.session_token !== 'string' || data.session_token === '') return null;
+    if (event.origin !== new URL(this.getReturnUrl()).origin) return null;
+    return { session_token: data.session_token, nonce: typeof data.nonce === 'string' ? data.nonce : undefined };
+  }
+
+  // A token handed over by the host page is handled exactly like a token in
+  // this document's own query string.
+  handleMessage(event) {
+    const session = this.sessionFromMessage(event);
+    if (!session) return;
+    this.setSearchParams(session.nonce ? session : { session_token: session.session_token });
+    this.checkForSessionToken();
   }
 
   getDefaultHost() {
@@ -371,7 +409,7 @@ class WalletConnectButton {
     }
 
     const startHost = this.apiKey ? this.walletConnectHost : "";
-    const startUrl = `${startHost}/api/create-session?lang=en&return_url=${encodeURIComponent(window.location.href)}`;
+    const startUrl = `${startHost}/api/create-session?lang=en&return_url=${encodeURIComponent(this.getReturnUrl())}`;
     
     const helpBaseUrlAttr = ` help-base-url="${this.getHelpBaseUrl()}"`;
     const businessAttr = this.business ? ' business' : '';
@@ -424,7 +462,8 @@ class WalletConnectButton {
       this.buttonElement.removeEventListener("click", this.handleButtonClick);
     }
     window.removeEventListener('popstate', this.handlePopState);
-    
+    window.removeEventListener('message', this.handleMessage);
+
     if (this.container) {
       this.container.innerHTML = '';
     }
@@ -439,7 +478,7 @@ class WalletConnectButtonElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['clientid', 'client-id', 'serviceid', 'service-id', 'apikey', 'api-key', 'use-local-wc-server', 'label', 'lang', 'helpbaseurl', 'help-base-url', 'issuance', 'business', 'over18', 'nbwallet'];
+    return ['clientid', 'client-id', 'serviceid', 'service-id', 'apikey', 'api-key', 'use-local-wc-server', 'label', 'lang', 'helpbaseurl', 'help-base-url', 'returnurl', 'return-url', 'issuance', 'business', 'over18', 'nbwallet'];
   }
 
   connectedCallback() {
@@ -457,6 +496,7 @@ class WalletConnectButtonElement extends HTMLElement {
       buttonText: this.getAttribute('label') || 'Connect Wallet',
       lang: this.getAttribute('lang') || 'nl',
       helpBaseUrl: this.getAttribute('helpBaseUrl') || this.getAttribute('helpbaseurl') || this.getAttribute('help-base-url'),
+      returnUrl: this.getAttribute('returnUrl') || this.getAttribute('returnurl') || this.getAttribute('return-url'),
       issuance: isIssuance,
       business: isBusiness,
       over18: isOver18,
@@ -519,6 +559,10 @@ class WalletConnectButtonElement extends HTMLElement {
         case 'helpbaseurl':
         case 'help-base-url':
           this.walletButton.helpBaseUrl = newValue;
+          break;
+        case 'returnurl':
+        case 'return-url':
+          this.walletButton.returnUrl = newValue;
           break;
         case 'issuance':
           this.walletButton.issuance = this.hasAttribute('issuance');
